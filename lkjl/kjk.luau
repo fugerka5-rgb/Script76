@@ -1,4 +1,4 @@
-
+-- ===================== SAVE MANAGER FOR RAYFIELD UI =====================
 
 local httpService = game:GetService("HttpService")
 
@@ -11,28 +11,30 @@ local SaveManager = {} do
 	SaveManager.Parser = {
 		Toggle = {
 			Save = function(idx, flagValue, element)
-				local timestamp = tick() -- Rayfield не имеет CreatedAt, используем текущее время
+				local timestamp = tick()
 				return { type = "Toggle", idx = idx, value = flagValue, Timestamp = timestamp }
 			end,
 			Load = function(idx, data)
 				if not SaveManager.Window then return end
 				
-				-- Через SetFlagValue
-				if SaveManager.Window.SetFlagValue then
-					pcall(function()
+				pcall(function()
+					if SaveManager.Window.SetFlagValue then
 						SaveManager.Window:SetFlagValue(idx, data.value)
-					end)
-				end
-				
-				-- Через GetFlag и Set (вызовет Callback)
-				if SaveManager.Window.GetFlag then
-					local element = SaveManager.Window:GetFlag(idx)
-					if element and element.Set then
-						pcall(function()
-							element:Set(data.value)
-						end)
 					end
-				end
+				end)
+				
+				pcall(function()
+					if SaveManager.Window.GetFlag then
+						local element = SaveManager.Window:GetFlag(idx)
+						if element then
+							if element.Set then
+								element:Set(data.value)
+							elseif element.SetValue then
+								element:SetValue(data.value)
+							end
+						end
+					end
+				end)
 			end,
 		},
 		Slider = {
@@ -43,20 +45,24 @@ local SaveManager = {} do
 			Load = function(idx, data)
 				if not SaveManager.Window then return end
 				
-				if SaveManager.Window.SetFlagValue then
-					pcall(function()
+				pcall(function()
+					if SaveManager.Window.SetFlagValue then
 						SaveManager.Window:SetFlagValue(idx, data.value)
-					end)
-				end
-				
-				if SaveManager.Window.GetFlag then
-					local element = SaveManager.Window:GetFlag(idx)
-					if element and element.Set then
-						pcall(function()
-							element:Set(data.value)
-						end)
 					end
-				end
+				end)
+				
+				pcall(function()
+					if SaveManager.Window.GetFlag then
+						local element = SaveManager.Window:GetFlag(idx)
+						if element then
+							if element.Set then
+								element:Set(data.value)
+							elseif element.SetValue then
+								element:SetValue(data.value)
+							end
+						end
+					end
+				end)
 			end,
 		},
 		Dropdown = {
@@ -68,20 +74,24 @@ local SaveManager = {} do
 			Load = function(idx, data)
 				if not SaveManager.Window then return end
 				
-				if SaveManager.Window.SetFlagValue then
-					pcall(function()
+				pcall(function()
+					if SaveManager.Window.SetFlagValue then
 						SaveManager.Window:SetFlagValue(idx, data.value)
-					end)
-				end
-				
-				if SaveManager.Window.GetFlag then
-					local element = SaveManager.Window:GetFlag(idx)
-					if element and element.Set then
-						pcall(function()
-							element:Set(data.value)
-						end)
 					end
-				end
+				end)
+				
+				pcall(function()
+					if SaveManager.Window.GetFlag then
+						local element = SaveManager.Window:GetFlag(idx)
+						if element then
+							if element.Set then
+								element:Set(data.value)
+							elseif element.SetValue then
+								element:SetValue(data.value)
+							end
+						end
+					end
+				end)
 			end,
 		},
 		Colorpicker = {
@@ -100,25 +110,27 @@ local SaveManager = {} do
 				local color = Color3.fromHex(data.value)
 				local transparency = data.transparency or 0
 				
-				if SaveManager.Window.SetFlagValue then
-					pcall(function()
+				pcall(function()
+					if SaveManager.Window.SetFlagValue then
 						SaveManager.Window:SetFlagValue(idx, color)
-					end)
-				end
-				
-				if SaveManager.Window.GetFlag then
-					local element = SaveManager.Window:GetFlag(idx)
-					if element and element.Set then
-						pcall(function()
-							element:Set(color)
-							if element.SetTransparency then
-								pcall(function()
-									element:SetTransparency(transparency)
-								end)
-							end
-						end)
 					end
-				end
+				end)
+				
+				pcall(function()
+					if SaveManager.Window.GetFlag then
+						local element = SaveManager.Window:GetFlag(idx)
+						if element then
+							if element.Set then
+								element:Set(color)
+							elseif element.SetValue then
+								element:SetValue(color)
+							end
+							if element.SetTransparency then
+								element:SetTransparency(transparency)
+							end
+						end
+					end
+				end)
 			end,
 		},
 		Keybind = {
@@ -133,24 +145,26 @@ local SaveManager = {} do
 			Load = function(idx, data)
 				if not SaveManager.Window then return end
 				
-				if SaveManager.Window.SetFlagValue then
-					pcall(function()
+				pcall(function()
+					if SaveManager.Window.SetFlagValue then
 						SaveManager.Window:SetFlagValue(idx, data.key)
-					end)
-				end
+					end
+				end)
 				
-				if SaveManager.Window.GetFlag then
-					local element = SaveManager.Window:GetFlag(idx)
-					if element and element.Set then
-						pcall(function()
+				pcall(function()
+					if SaveManager.Window.GetFlag then
+						local element = SaveManager.Window:GetFlag(idx)
+						if element then
 							if element.SetKeybind then
 								element:SetKeybind(data.key, data.mode)
-							else
+							elseif element.Set then
 								element:Set(data.key)
+							elseif element.SetValue then
+								element:SetValue(data.key)
 							end
-						end)
+						end
 					end
-				end
+				end)
 			end,
 		},
 		Input = {
@@ -160,28 +174,30 @@ local SaveManager = {} do
 			end,
 			Load = function(idx, data)
 				if not SaveManager.Window then return end
-				
 				if type(data.text) ~= "string" then return end
 				
-				if SaveManager.Window.SetFlagValue then
-					pcall(function()
+				pcall(function()
+					if SaveManager.Window.SetFlagValue then
 						SaveManager.Window:SetFlagValue(idx, data.text)
-					end)
-				end
-				
-				if SaveManager.Window.GetFlag then
-					local element = SaveManager.Window:GetFlag(idx)
-					if element and element.Set then
-						pcall(function()
-							element:Set(data.text)
-						end)
 					end
-				end
+				end)
+				
+				pcall(function()
+					if SaveManager.Window.GetFlag then
+						local element = SaveManager.Window:GetFlag(idx)
+						if element then
+							if element.Set then
+								element:Set(data.text)
+							elseif element.SetValue then
+								element:SetValue(data.text)
+							end
+						end
+					end
+				end)
 			end,
 		},
 	}
 
-	-- Определить тип элемента
 	function SaveManager:GetElementType(flagName, flagValue, element)
 		if element then
 			if element.Type == "Toggle" then return "Toggle"
@@ -257,7 +273,6 @@ local SaveManager = {} do
 			end
 		end
 
-		-- Сортировка по Timestamp (как в оригинале)
 		table.sort(data.objects, function(v1, v2)
 			return (v1.Timestamp or 0) < (v2.Timestamp or 0)
 		end)
@@ -379,11 +394,9 @@ local SaveManager = {} do
 			error("Must set SaveManager.Rayfield")
 		end
 
-		-- Локальные переменные для хранения значений
 		local configName = "default"
 		local configsList = self:RefreshConfigList()
 		
-		-- Input для имени конфига
 		local configNameInput = tab:CreateInput({
 			Name = "Config name",
 			PlaceholderText = "default",
@@ -395,7 +408,6 @@ local SaveManager = {} do
 			end,
 		})
 
-		-- Dropdown для списка конфигов
 		local configsDropdown = tab:CreateDropdown({
 			Name = "Config list",
 			Options = configsList,
@@ -405,13 +417,18 @@ local SaveManager = {} do
 				if Option then
 					configName = tostring(Option)
 					if configNameInput then
-						pcall(function() configNameInput:Set(configName) end)
+						pcall(function()
+							if configNameInput.Set then
+								configNameInput:Set(configName)
+							elseif configNameInput.SetValue then
+								configNameInput:SetValue(configName)
+							end
+						end)
 					end
 				end
 			end,
 		})
 
-		-- Кнопка Create config
 		tab:CreateButton({
 			Name = "Create config",
 			Callback = function()
@@ -444,18 +461,26 @@ local SaveManager = {} do
 					Duration = 7
 				})
 
-				-- Обновляем список (аналог SetValues и SetValue(nil))
 				configsList = self:RefreshConfigList()
 				if configsDropdown then
-					configsDropdown:Refresh(configsList, true)
-					configsDropdown:Set(nil)
+					pcall(function()
+						if configsDropdown.Refresh then
+							configsDropdown:Refresh(configsList, true)
+						elseif configsDropdown.SetOptions then
+							configsDropdown:SetOptions(configsList)
+						end
+						if configsDropdown.Set then
+							configsDropdown:Set(nil)
+						elseif configsDropdown.SetValue then
+							configsDropdown:SetValue(nil)
+						end
+					end)
 				end
 
 				return nil
 			end
 		})
 
-		-- Кнопка Load config
 		tab:CreateButton({
 			Name = "Load config",
 			Callback = function()
@@ -481,7 +506,6 @@ local SaveManager = {} do
 			end
 		})
 
-		-- Кнопка Overwrite config
 		tab:CreateButton({
 			Name = "Overwrite config",
 			Callback = function()
@@ -507,19 +531,27 @@ local SaveManager = {} do
 			end
 		})
 
-		-- Кнопка Refresh list
 		tab:CreateButton({
 			Name = "Refresh list",
 			Callback = function()
 				configsList = self:RefreshConfigList()
 				if configsDropdown then
-					configsDropdown:Refresh(configsList, true)
-					configsDropdown:Set(nil)
+					pcall(function()
+						if configsDropdown.Refresh then
+							configsDropdown:Refresh(configsList, true)
+						elseif configsDropdown.SetOptions then
+							configsDropdown:SetOptions(configsList)
+						end
+						if configsDropdown.Set then
+							configsDropdown:Set(nil)
+						elseif configsDropdown.SetValue then
+							configsDropdown:SetValue(nil)
+						end
+					end)
 				end
 			end
 		})
 
-		-- Кнопка Set as autoload
 		local autoloadDesc = "Current autoload config: none"
 		if isfile(self.Folder .. "/settings/autoload.txt") then
 			local name = readfile(self.Folder .. "/settings/autoload.txt")
@@ -535,9 +567,14 @@ local SaveManager = {} do
 				
 				writefile(self.Folder .. "/settings/autoload.txt", cleanName)
 				
-				-- Обновляем описание (аналог SetDesc)
-				if autoloadButton and autoloadButton.SetDescription then
-					autoloadButton:SetDescription("Current autoload config: " .. cleanName)
+				if autoloadButton then
+					pcall(function()
+						if autoloadButton.SetDescription then
+							autoloadButton:SetDescription("Current autoload config: " .. cleanName)
+						elseif autoloadButton.SetDesc then
+							autoloadButton:SetDesc("Current autoload config: " .. cleanName)
+						end
+					end)
 				end
 				
 				self.Rayfield:Notify({
@@ -549,7 +586,6 @@ local SaveManager = {} do
 			end
 		})
 
-		-- Игнорируем Flag'и конфиг-менеджера
 		SaveManager:SetIgnoreIndexes({ "SaveManager_ConfigList", "SaveManager_ConfigName" })
 	end
 
