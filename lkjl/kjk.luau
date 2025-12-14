@@ -1,5 +1,3 @@
--- ===================== SAVE MANAGER FOR RAYFIELD UI =====================
-
 local httpService = game:GetService("HttpService")
 
 local SaveManager = {} do
