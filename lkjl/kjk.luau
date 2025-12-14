@@ -1,5 +1,4 @@
--- ===================== SAVE MANAGER ДЛЯ RAYFIELD UI =====================
--- Полная адаптация оригинального Fluent SaveManager
+
 
 local httpService = game:GetService("HttpService")
 
